@@ -4,17 +4,12 @@ Gradle plugin to manage an application version code inside its continuous integr
 
 This plugin was developed for the REST service: [version-code-service].
 
-
 ## Usage
-
 ### Setup buildscript Dependencies
-
 Note that it's not yet available in Maven Central, but soon will be.
 
 Add it to your buildscript dependencies:
-
 ```groovy
-
 buildscript {
 
     repositories {
@@ -35,9 +30,7 @@ buildscript {
 ### Tasks Configuration
 
 ```groovy
-
 appVersionCode {
-
     appId = <app identifier>
     serviceEndpoint = <version code service endpoint>
 }
@@ -48,21 +41,17 @@ appVersionCode {
 Use the task 'incrementVersionCode'. For instance, in the command line type:
 
 ```sh
-./gradlew incrementVersionCode
+$ ./gradlew incrementVersionCode
 ```
 
 ### Retrieve App's Current Version Code
 
-
 ```groovy
 import com.mindera.gradle.versioncode.utils.VersionCodeService
-
 apply plugin: 'com.mindera.gradle.versioncode'
-
+(...)
 VersionCodeService versionCodeService = new VersionCodeService(<version code service endpoint>, <app identifier>)
-
 return versionCodeService.currentVersionCode()
-
 ```
 
 ## Dependencies

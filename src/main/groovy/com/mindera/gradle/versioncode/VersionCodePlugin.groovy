@@ -27,4 +27,5 @@ class VersionCodePlugin implements Plugin<Project> {
 class VersionCodePluginExtension {
     def String appId
     def String serviceEndpoint
+    def boolean enabled
 }

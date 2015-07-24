@@ -6,26 +6,32 @@ This plugin was developed for the REST service: [version-code-service].
 
 ## Usage
 ### Setup buildscript Dependencies
-Note that it's not yet available in Maven Central, but soon will be.
 
-Add it to your buildscript dependencies:
+The plugin is available in [JitPack](https://jitpack.io/). Just add the following to your buildscript dependencies:
+
 ```groovy
 buildscript {
 
     repositories {
-        (...)
-
+    	....
         maven {
-	        // Temporary maven repository, until it is not available in Maven Central
-            url uri('http://joaoprudencio.com/m2/repository')
+            url "https://jitpack.io"
         }
     }
     
     dependencies {
-        classpath 'com.mindera.gradle.versioncode:gradle-versioncode-plugin:1.0'
+    	...
+        classpath 'com.github.Mindera:gradle-versioncode-plugin::1.1'
     }
 }
 ```
+
+Apply it:
+
+```groovy
+apply plugin: 'com.mindera.gradle.versioncode'
+```
+
 
 ### Tasks Configuration
 

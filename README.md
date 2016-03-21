@@ -21,7 +21,7 @@ buildscript {
     
     dependencies {
     	...
-        classpath 'com.github.Mindera:gradle-versioncode-plugin::1.1'
+        classpath 'com.github.Mindera:gradle-versioncode-plugin:1.2'
     }
 }
 ```
@@ -48,6 +48,12 @@ Use the task 'incrementVersionCode'. For instance, in the command line type:
 
 ```sh
 $ ./gradlew incrementVersionCode
+```
+
+If you want to set the appId as a parameter:
+
+```sh
+$ ./gradlew incrementVersionCode -PappId=com.mindera.gradle
 ```
 
 ### Retrieve App's Current Version Code

@@ -1,3 +1,5 @@
+[![Release](https://jitpack.io/v/Mindera/gradle-versioncode-plugin.svg)](https://jitpack.io/#Mindera/gradle-versioncode-plugin)
+
 # gradle-versioncode-plugin
 
 Gradle plugin to manage an application version code inside its continuous integration lifecycle.

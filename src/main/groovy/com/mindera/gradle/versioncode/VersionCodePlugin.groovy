@@ -15,11 +15,13 @@ class VersionCodePlugin implements Plugin<Project> {
 
         project.task('incrementVersionCode') << {
 
+            def appId = project.hasProperty('appId') ? project.appId : project.appVersionCode.appId
+
             def VersionCodeService versionCodeService = new VersionCodeService(
                     (String) project.appVersionCode.serviceEndpoint,
-                    (String) project.appVersionCode.appId)
+                    (String) appId)
 
-            println(versionCodeService.incrementVersionCode())
+            println(appId + ' -> ' + versionCodeService.incrementVersionCode())
         }
     }
 }

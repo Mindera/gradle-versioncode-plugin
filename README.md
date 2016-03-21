@@ -39,7 +39,7 @@ apply plugin: 'com.mindera.gradle.versioncode'
 
 ```groovy
 appVersionCode {
-    appId = <app identifier>
+    appId = <app identifier> (optional if you send as paramater)
     serviceEndpoint = <version code service endpoint>
 }
 ```
@@ -52,7 +52,7 @@ Use the task 'incrementVersionCode'. For instance, in the command line type:
 $ ./gradlew incrementVersionCode
 ```
 
-If you want to set the appId as a parameter:
+If you want to send the appId as a parameter, replacing the one defined in **appVersionCode**, use as:
 
 ```sh
 $ ./gradlew incrementVersionCode -PappId=com.mindera.gradle

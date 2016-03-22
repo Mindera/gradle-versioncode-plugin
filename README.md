@@ -1,3 +1,5 @@
+[![Release](https://jitpack.io/v/Mindera/gradle-versioncode-plugin.svg)](https://jitpack.io/#Mindera/gradle-versioncode-plugin)
+
 # gradle-versioncode-plugin
 
 Gradle plugin to manage an application version code inside its continuous integration lifecycle.
@@ -21,7 +23,7 @@ buildscript {
     
     dependencies {
     	...
-        classpath 'com.github.Mindera:gradle-versioncode-plugin::1.1'
+        classpath 'com.github.Mindera:gradle-versioncode-plugin:1.2'
     }
 }
 ```
@@ -37,7 +39,7 @@ apply plugin: 'com.mindera.gradle.versioncode'
 
 ```groovy
 appVersionCode {
-    appId = <app identifier>
+    appId = <app identifier> (optional if you send as paramater)
     serviceEndpoint = <version code service endpoint>
 }
 ```
@@ -48,6 +50,12 @@ Use the task 'incrementVersionCode'. For instance, in the command line type:
 
 ```sh
 $ ./gradlew incrementVersionCode
+```
+
+If you want to send the appId as a parameter, replacing the one defined in **appVersionCode**, use as:
+
+```sh
+$ ./gradlew incrementVersionCode -PappId=com.mindera.gradle
 ```
 
 ### Retrieve App's Current Version Code

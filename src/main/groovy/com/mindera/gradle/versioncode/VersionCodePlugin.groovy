@@ -45,6 +45,8 @@ class VersionCodePlugin implements Plugin<Project> {
                 incrementVersionCodeTask.appId = getApplicationId(extension, variant)
                 incrementVersionCodeTask.serviceEndpoint = extension.serviceEndpoint
                 incrementVersionCodeTask.enabled = extension.enabled
+                incrementVersionCodeTask.description =
+                        "Increment version code for ${variationName} build type"
                 incrementVersionCodeTask.group = GRADLE_GROUP
             }
         } else {
@@ -54,6 +56,7 @@ class VersionCodePlugin implements Plugin<Project> {
             incrementVersionCodeTask.appId = extension.appId
             incrementVersionCodeTask.serviceEndpoint = extension.serviceEndpoint
             incrementVersionCodeTask.enabled = extension.enabled
+            incrementVersionCodeTask.description = "Increment version code"
             incrementVersionCodeTask.group = GRADLE_GROUP
         }
     }

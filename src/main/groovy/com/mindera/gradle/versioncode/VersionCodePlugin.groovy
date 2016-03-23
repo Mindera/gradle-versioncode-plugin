@@ -1,51 +1,59 @@
 package com.mindera.gradle.versioncode
 
+import com.android.build.gradle.api.ApplicationVariant
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.ProjectConfigurationException
 
 /**
  *  Created by ricardovieira on 05/05/15.
  */
 class VersionCodePlugin implements Plugin<Project> {
 
-    public static final String GRADLE_GROUP = "Increment Version Code"
+    private static final String TASK_PREFIX = "incrementVersionCode"
+
+    private static final String GRADLE_GROUP = "Increment Version Code"
 
     void apply(Project project) {
 
         def log = project.logger
 
-        if (!hasAndroidPlugin(project)) {
-            throw new ProjectConfigurationException(
-                    "The 'com.android.application' plugin is required.", null)
-        }
-
         def extension = project.extensions.create("appVersionCode", VersionCodePluginExtension)
 
-        project.android.applicationVariants.all { variant ->
+        if (hasAndroidPlugin(project)) {
 
-            if (variant.buildType.isDebuggable()) {
-                log.debug("Skipping debuggable build type ${variant.buildType.name}.")
-                return
+            project.android.applicationVariants.all { variant ->
+                log.debug("Detected android plugin")
+                if (variant.buildType.isDebuggable()) {
+                    log.debug("Skipping debuggable build type ${variant.buildType.name}.")
+                    return
+                }
+
+                def buildTypeName = variant.buildType.name.capitalize()
+
+                def productFlavorNames = variant.productFlavors.collect { it.name.capitalize() }
+                if (productFlavorNames.isEmpty()) {
+                    productFlavorNames = [""]
+                }
+                def productFlavorName = productFlavorNames.join('')
+
+                def variationName = "${productFlavorName}${buildTypeName}"
+
+                def incrementVersionCodeTaskName = "${TASK_PREFIX}${variationName}"
+
+                def incrementVersionCodeTask = project.tasks.
+                        create(incrementVersionCodeTaskName, IncrementVersionCodeTask)
+                incrementVersionCodeTask.appId = getApplicationId(extension, variant)
+                incrementVersionCodeTask.serviceEndpoint = extension.serviceEndpoint
+                incrementVersionCodeTask.enabled = extension.enabled
+                incrementVersionCodeTask.group = GRADLE_GROUP
             }
-
-            def buildTypeName = variant.buildType.name.capitalize()
-            println buildTypeName
-
-            def productFlavorNames = variant.productFlavors.collect { it.name.capitalize() }
-            if (productFlavorNames.isEmpty()) {
-                productFlavorNames = [""]
-            }
-            def productFlavorName = productFlavorNames.join('')
-
-            def variationName = "${productFlavorName}${buildTypeName}"
-
-            def incrementVersionCodeTaskName = "incrementVersionCode${variationName}"
-
+        } else {
+            log.debug("Android plugin not detected")
             def incrementVersionCodeTask = project.tasks.
-                    create(incrementVersionCodeTaskName, IncrementVersionCodeTask)
-            incrementVersionCodeTask.extension = extension
-            incrementVersionCodeTask.variant = variant
+                    create(TASK_PREFIX, IncrementVersionCodeTask)
+            incrementVersionCodeTask.appId = extension.appId
+            incrementVersionCodeTask.serviceEndpoint = extension.serviceEndpoint
+            incrementVersionCodeTask.enabled = extension.enabled
             incrementVersionCodeTask.group = GRADLE_GROUP
         }
     }
@@ -57,6 +65,17 @@ class VersionCodePlugin implements Plugin<Project> {
      */
     static boolean hasAndroidPlugin(Project project) {
         return project.plugins.hasPlugin("com.android.application")
+    }
+
+    static String getApplicationId(VersionCodePluginExtension extension,
+            ApplicationVariant variant) {
+        def appId
+        if (extension.hasProperty("appId") && extension.appId != null) {
+            appId = extension.appId
+        } else {
+            appId = variant.applicationId
+        }
+        return appId
     }
 }
 

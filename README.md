@@ -23,7 +23,7 @@ buildscript {
     
     dependencies {
     	...
-        classpath 'com.github.Mindera:gradle-versioncode-plugin:1.2'
+        classpath 'com.github.Mindera:gradle-versioncode-plugin:1.3'
     }
 }
 ```
@@ -34,12 +34,37 @@ Apply it:
 apply plugin: 'com.mindera.gradle.versioncode'
 ```
 
+If you are using android flavors, this will generate a task for each combination of flavor and build type that are not debuggable.
+
+For instance, if you have:
+
+```groovy
+productFlavors {
+        pro {
+            applicationId = "com.example.my.pkg.pro"
+        }
+        free {
+            applicationId = "com.example.my.pkg.free"
+        }
+    }
+```
+
+This plugin will generate the tasks:
+
+```groovy
+**Increment Version Code tasks**
+
+incrementVersionCodeProRelease
+incrementVersionCodeFreeRelease
+```
+
+Note: This plugin will use the value in **applicationId** if set, if not it will revert back to the one defined in **appVersionCode**.
 
 ### Tasks Configuration
 
 ```groovy
 appVersionCode {
-    appId = <app identifier> (optional if you send as paramater)
+    appId = <app identifier> (optional if you are using flavors)
     serviceEndpoint = <version code service endpoint>
 }
 ```
@@ -51,11 +76,10 @@ Use the task 'incrementVersionCode'. For instance, in the command line type:
 ```sh
 $ ./gradlew incrementVersionCode
 ```
-
-If you want to send the appId as a parameter, replacing the one defined in **appVersionCode**, use as:
+If you're using android flavors, you could run:
 
 ```sh
-$ ./gradlew incrementVersionCode -PappId=com.mindera.gradle
+$ ./gradlew incrementVersionCodeProRelease
 ```
 
 ### Retrieve App's Current Version Code

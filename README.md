@@ -56,13 +56,13 @@ incrementVersionCodeProRelease
 incrementVersionCodeFreeRelease
 ```
 
-Note: When using flavors, if you set the **appVersionCode.appId** it will be used for ervery flavor, if not it will revert back to the value in  **applicationId**.
+Note: When using flavors, if you set the **appVersionCode.appId** it will be used for every flavor, if not it will use the value in **applicationId**.
 
 ### Tasks Configuration
 
 ```groovy
 appVersionCode {
-    appId = <app identifier> (optional if you are using flavors)
+    appId = <app identifier> (do not use if you are using flavors)
     serviceEndpoint = <version code service endpoint>
 }
 ```

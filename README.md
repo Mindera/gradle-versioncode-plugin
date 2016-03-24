@@ -52,13 +52,11 @@ productFlavors {
 This plugin will generate the tasks:
 
 ```groovy
-**Increment Version Code tasks**
-
 incrementVersionCodeProRelease
 incrementVersionCodeFreeRelease
 ```
 
-Note: This plugin will use the value in **applicationId** if set, if not it will revert back to the one defined in **appVersionCode**.
+Note: When using flavors, if you set the **appVersionCode.appId** it will be used for ervery flavor, if not it will revert back to the value in  **applicationId**.
 
 ### Tasks Configuration
 

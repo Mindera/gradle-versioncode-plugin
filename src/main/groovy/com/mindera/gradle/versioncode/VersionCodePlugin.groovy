@@ -1,33 +1,84 @@
 package com.mindera.gradle.versioncode
 
+import com.android.build.gradle.api.ApplicationVariant
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import com.mindera.gradle.versioncode.utils.VersionCodeService
 
 /**
-*  Created by ricardovieira on 05/05/15.
-*/
+ *  Created by ricardovieira on 05/05/15.
+ */
 class VersionCodePlugin implements Plugin<Project> {
+
+    private static final String TASK_PREFIX = "incrementVersionCode"
+
+    private static final String GRADLE_GROUP = "Increment Version Code"
 
     void apply(Project project) {
 
-        project.extensions.create("appVersionCode", VersionCodePluginExtension)
+        def log = project.logger
 
-        project.task('incrementVersionCode') << {
+        def extension = project.extensions.create("appVersionCode", VersionCodePluginExtension)
 
-            def appId = project.hasProperty('appId') ? project.appId : project.appVersionCode.appId
+        if (hasAndroidPlugin(project)) {
 
-            def VersionCodeService versionCodeService = new VersionCodeService(
-                    (String) project.appVersionCode.serviceEndpoint,
-                    (String) appId)
+            project.android.applicationVariants.all { variant ->
+                log.debug("Detected android plugin")
+                if (variant.buildType.isDebuggable()) {
+                    log.debug("Skipping debuggable build type ${variant.buildType.name}.")
+                    return
+                }
 
-            println(appId + ' -> ' + versionCodeService.incrementVersionCode())
+                def buildTypeName = variant.buildType.name.capitalize()
+
+                def productFlavorNames = variant.productFlavors.collect { it.name.capitalize() }
+                if (productFlavorNames.isEmpty()) {
+                    productFlavorNames = [""]
+                }
+                def productFlavorName = productFlavorNames.join('')
+
+                def variationName = "${productFlavorName}${buildTypeName}"
+
+                def incrementVersionCodeTaskName = "${TASK_PREFIX}${variationName}"
+
+                def incrementVersionCodeTask = project.tasks.
+                        create(incrementVersionCodeTaskName, IncrementVersionCodeTask)
+                incrementVersionCodeTask.appId = getApplicationId(extension, variant)
+                incrementVersionCodeTask.serviceEndpoint = extension.serviceEndpoint
+                incrementVersionCodeTask.enabled = extension.enabled
+                incrementVersionCodeTask.description =
+                        "Increment version code for ${variationName} build type"
+                incrementVersionCodeTask.group = GRADLE_GROUP
+            }
+        } else {
+            log.debug("Android plugin not detected")
+            def incrementVersionCodeTask = project.tasks.
+                    create(TASK_PREFIX, IncrementVersionCodeTask)
+            incrementVersionCodeTask.appId = extension.appId
+            incrementVersionCodeTask.serviceEndpoint = extension.serviceEndpoint
+            incrementVersionCodeTask.enabled = extension.enabled
+            incrementVersionCodeTask.description = "Increment version code"
+            incrementVersionCodeTask.group = GRADLE_GROUP
         }
+    }
+
+    /**
+     * Check if android plugin is applied
+     * @param project Project
+     * @return plugin applied
+     */
+    static boolean hasAndroidPlugin(Project project) {
+        return project.plugins.hasPlugin("com.android.application")
+    }
+
+    static String getApplicationId(VersionCodePluginExtension extension,
+            ApplicationVariant variant) {
+        def appId
+        if (extension.hasProperty("appId") && extension.appId != null) {
+            appId = extension.appId
+        } else {
+            appId = variant.applicationId
+        }
+        return appId
     }
 }
 
-class VersionCodePluginExtension {
-    def String appId
-    def String serviceEndpoint
-    def boolean enabled
-}
